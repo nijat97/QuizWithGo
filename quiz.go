@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -12,15 +13,19 @@ import (
 
 func main() {
 	correct, total := 0, 0
-	file := os.Args[1]
-	f, err := os.Open(file)
+	file := flag.String("file", "problems.csv", "file for problems")
+	t := flag.Int("time", 30, "timer for game")
+
+	flag.Parse()
+	f, err := os.Open(*file)
 	if err != nil {
 		log.Fatal(err)
 	}
 	csv := csv.NewReader(f)
 	fmt.Println("Press Enter to start time.")
 	fmt.Scanln()
-	timer := time.NewTimer(10 * time.Second)
+
+	timer := time.NewTimer(time.Duration(*t) * time.Second)
 	go func() {
 		<-timer.C
 		fmt.Printf("Correct answers: %d out of %d\n", correct, total)
